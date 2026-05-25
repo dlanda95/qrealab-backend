@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
-import { Media } from './collections/Media'
+import { Media } from './collections/Media'          // <-- AGREGA ESTO
+import { HeroSlides } from './collections/HeroSlides'   // <-- AGREGA ESTO
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -18,7 +19,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+serverURL: 'http://localhost:3000', // Agrégalo explícitamente aquí
+  cors: ['http://localhost:3000','http://localhost:4200'],
+  csrf: ['http://localhost:3000','http://localhost:4200'],
+
+  collections: [Users, Media,HeroSlides],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
