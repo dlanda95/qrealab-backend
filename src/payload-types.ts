@@ -70,6 +70,8 @@ export interface Config {
     users: User;
     media: Media;
     'hero-slides': HeroSlide;
+    history: History;
+    whoweare: Whoweare;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +82,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'hero-slides': HeroSlidesSelect<false> | HeroSlidesSelect<true>;
+    history: HistorySelect<false> | HistorySelect<true>;
+    whoweare: WhoweareSelect<false> | WhoweareSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -169,12 +173,37 @@ export interface Media {
  */
 export interface HeroSlide {
   id: number;
+  _order?: string | null;
   tag?: string | null;
   title: string;
   subtitle?: string | null;
   image: number | Media;
   ctaText?: string | null;
   ctaLink?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "history".
+ */
+export interface History {
+  id: number;
+  title: string;
+  description: string;
+  image?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "whoweare".
+ */
+export interface Whoweare {
+  id: number;
+  title: string;
+  description: string;
+  image?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -213,6 +242,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'hero-slides';
         value: number | HeroSlide;
+      } | null)
+    | ({
+        relationTo: 'history';
+        value: number | History;
+      } | null)
+    | ({
+        relationTo: 'whoweare';
+        value: number | Whoweare;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -301,12 +338,35 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "hero-slides_select".
  */
 export interface HeroSlidesSelect<T extends boolean = true> {
+  _order?: T;
   tag?: T;
   title?: T;
   subtitle?: T;
   image?: T;
   ctaText?: T;
   ctaLink?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "history_select".
+ */
+export interface HistorySelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "whoweare_select".
+ */
+export interface WhoweareSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?: T;
   updatedAt?: T;
   createdAt?: T;
 }

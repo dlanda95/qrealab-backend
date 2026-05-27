@@ -8,6 +8,8 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'          // <-- AGREGA ESTO
 import { HeroSlides } from './collections/HeroSlides'   // <-- AGREGA ESTO
+import { History } from './collections/History'
+import { WhoWeAre } from './collections/WhoWeAre'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -23,7 +25,7 @@ serverURL: 'http://localhost:3000', // Agrégalo explícitamente aquí
   cors: ['http://localhost:3000','http://localhost:4200'],
   csrf: ['http://localhost:3000','http://localhost:4200'],
 
-  collections: [Users, Media,HeroSlides],
+  collections: [Users, Media,HeroSlides,History,WhoWeAre],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

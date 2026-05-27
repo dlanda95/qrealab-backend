@@ -2,12 +2,21 @@ import type { CollectionConfig } from 'payload'
 
 export const HeroSlides: CollectionConfig = {
   slug: 'hero-slides',
+
+  orderable: true,
+  defaultSort: '_order',
+
   admin: {
-    useAsTitle: 'tag', // En la lista del panel, mostrará la Etiqueta como título
+    useAsTitle: 'tag',
+    defaultColumns: ['_order', 'tag', 'title', 'updatedAt'],
+    listSearchableFields: ['tag', 'title'],
+    enableRichTextRelationship: true,
   },
+
   access: {
-    read: () => true, // Angular necesita leer esto sin iniciar sesión
+    read: () => true,
   },
+
   fields: [
     {
       name: 'tag',
@@ -17,7 +26,7 @@ export const HeroSlides: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      label: 'Título Principal (Permite etiquetas HTML como <span class="text-green">)',
+      label: 'Título Principal',
       required: true,
     },
     {
@@ -28,12 +37,12 @@ export const HeroSlides: CollectionConfig = {
     {
       name: 'image',
       type: 'upload',
-      relationTo: 'media', // Lo conecta con la colección Media que creamos arriba
+      relationTo: 'media',
       label: 'Imagen de Fondo',
       required: true,
     },
     {
-      type: 'row', // Agrupa estos dos campos visualmente en la misma línea
+      type: 'row',
       fields: [
         {
           name: 'ctaText',
@@ -43,9 +52,9 @@ export const HeroSlides: CollectionConfig = {
         {
           name: 'ctaLink',
           type: 'text',
-          label: 'Enlace del Botón (Ej: /about)',
-        }
-      ]
-    }
+          label: 'Enlace del Botón',
+        },
+      ],
+    },
   ],
 }
