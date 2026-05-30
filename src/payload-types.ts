@@ -72,6 +72,8 @@ export interface Config {
     'hero-slides': HeroSlide;
     history: History;
     whoweare: Whoweare;
+    'our-values': OurValue;
+    footer: Footer;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +86,8 @@ export interface Config {
     'hero-slides': HeroSlidesSelect<false> | HeroSlidesSelect<true>;
     history: HistorySelect<false> | HistorySelect<true>;
     whoweare: WhoweareSelect<false> | WhoweareSelect<true>;
+    'our-values': OurValuesSelect<false> | OurValuesSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -208,6 +212,110 @@ export interface Whoweare {
   createdAt: string;
 }
 /**
+ * Esta colección controla la sección "Nuestros Valores" del Home. Crea un único documento.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "our-values".
+ */
+export interface OurValue {
+  id: number;
+  /**
+   * Ej: "Nuestros Valores" — se muestra como heading principal.
+   */
+  sectionTitle: string;
+  /**
+   * Imagen lateral con forma de hoja. Opcional pero recomendada.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Cada valor tiene un ícono, un título y sus puntos descriptivos.
+   */
+  values?:
+    | {
+        icon:
+          | 'heart'
+          | 'lightbulb'
+          | 'trending-up'
+          | 'shield'
+          | 'star'
+          | 'users'
+          | 'award'
+          | 'target'
+          | 'leaf'
+          | 'hand-heart'
+          | 'brain'
+          | 'book-open'
+          | 'rocket'
+          | 'circle-check';
+        title: string;
+        /**
+         * Cada punto tiene una etiqueta en negrita y un texto descriptivo.
+         */
+        points?:
+          | {
+              label: string;
+              description: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Contenido del pie de página. Solo debe existir UN documento.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  /**
+   * Texto breve bajo el logo (máx. 2 líneas recomendado).
+   */
+  brandDescription: string;
+  /**
+   * Botones de redes sociales (LinkedIn, Instagram, etc.).
+   */
+  socialLinks?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Hasta 2 columnas de links (Compañía, Soporte, etc.).
+   */
+  linkColumns?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  contactTitle: string;
+  /**
+   * Cada salto de línea se muestra como un párrafo separado.
+   */
+  address?: string | null;
+  contactEmail?: string | null;
+  /**
+   * El símbolo © se agrega automáticamente al inicio.
+   */
+  copyrightText: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -250,6 +358,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'whoweare';
         value: number | Whoweare;
+      } | null)
+    | ({
+        relationTo: 'our-values';
+        value: number | OurValue;
+      } | null)
+    | ({
+        relationTo: 'footer';
+        value: number | Footer;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -367,6 +483,63 @@ export interface WhoweareSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "our-values_select".
+ */
+export interface OurValuesSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  image?: T;
+  values?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        points?:
+          | T
+          | {
+              label?: T;
+              description?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  brandDescription?: T;
+  socialLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  linkColumns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  contactTitle?: T;
+  address?: T;
+  contactEmail?: T;
+  copyrightText?: T;
   updatedAt?: T;
   createdAt?: T;
 }
