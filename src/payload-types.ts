@@ -74,6 +74,8 @@ export interface Config {
     whoweare: Whoweare;
     'our-values': OurValue;
     footer: Footer;
+    'product-categories': ProductCategory;
+    products: Product;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +90,8 @@ export interface Config {
     whoweare: WhoweareSelect<false> | WhoweareSelect<true>;
     'our-values': OurValuesSelect<false> | OurValuesSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -317,6 +321,55 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Ej: cardiovascular, respiratorio, dolor
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Ej: cardiotrex-10mg (sin espacios, en minúsculas)
+   */
+  slug: string;
+  category: number | ProductCategory;
+  /**
+   * Frase breve que aparece en la tarjeta. Máx. 80 caracteres.
+   */
+  tagline?: string | null;
+  activeIngredient?: string | null;
+  description?: string | null;
+  image?: (number | null) | Media;
+  /**
+   * Ej: Tabletas 10mg × 20, Jarabe 120 mL
+   */
+  presentations?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  featured?: boolean | null;
+  status?: ('active' | 'inactive') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -366,6 +419,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'footer';
         value: number | Footer;
+      } | null)
+    | ({
+        relationTo: 'product-categories';
+        value: number | ProductCategory;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -540,6 +601,41 @@ export interface FooterSelect<T extends boolean = true> {
   address?: T;
   contactEmail?: T;
   copyrightText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories_select".
+ */
+export interface ProductCategoriesSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  slug?: T;
+  category?: T;
+  tagline?: T;
+  activeIngredient?: T;
+  description?: T;
+  image?: T;
+  presentations?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  featured?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

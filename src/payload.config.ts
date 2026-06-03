@@ -12,6 +12,8 @@ import { History } from './collections/History'
 import { WhoWeAre } from './collections/WhoWeAre'
 import { OurValues } from './collections/OurValues'
 import { Footer }    from './collections/Footer'
+import { ProductCategories } from './collections/ProductCategories'
+import { Products }           from './collections/Products'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -27,7 +29,7 @@ serverURL: 'http://localhost:3000', // Agrégalo explícitamente aquí
   cors: ['http://localhost:3000','http://localhost:4200'],
   csrf: ['http://localhost:3000','http://localhost:4200'],
 
-  collections: [Users, Media, HeroSlides, History, WhoWeAre, OurValues, Footer],
+  collections: [Users, Media, HeroSlides, History, WhoWeAre, OurValues, Footer, ProductCategories, Products],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
