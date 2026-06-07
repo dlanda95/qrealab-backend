@@ -1,0 +1,33 @@
+# Dependencias — se instalan dentro del contenedor
+node_modules
+.pnpm-store
+
+# Build artifacts
+.next
+
+# Archivos de desarrollo
+.env
+.env.local
+.env.development
+.env.development.local
+
+# Datos locales
+media
+
+# Logs y caché
+*.log
+.turbo
+.cache
+
+# Tests
+tests
+playwright.config.ts
+vitest.config.mts
+vitest.setup.ts
+
+# Git
+.git
+.gitignore
+
+# Docs
+README.md

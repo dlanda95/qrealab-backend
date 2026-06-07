@@ -77,6 +77,7 @@ export interface Config {
     'product-categories': ProductCategory;
     products: Product;
     vigilance: Vigilance;
+    'contact-submissions': ContactSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,6 +95,7 @@ export interface Config {
     'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     vigilance: VigilanceSelect<false> | VigilanceSelect<true>;
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -103,8 +105,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('es' | 'en') | ('es' | 'en')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'contact-settings': ContactSetting;
+  };
+  globalsSelect: {
+    'contact-settings': ContactSettingsSelect<false> | ContactSettingsSelect<true>;
+  };
   locale: 'es' | 'en';
   widgets: {
     collections: CollectionsWidget;
@@ -413,6 +419,25 @@ export interface Vigilance {
   createdAt: string;
 }
 /**
+ * Formularios de contacto recibidos desde el sitio web.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions".
+ */
+export interface ContactSubmission {
+  id: number;
+  nombres: string;
+  apellidos: string;
+  telefono: string;
+  correo: string;
+  formaContacto: 'whatsapp' | 'telefono' | 'correo';
+  mensaje?: string | null;
+  aceptaPoliticas: boolean;
+  estado?: ('nuevo' | 'seguimiento' | 'contactado' | 'cerrado') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -475,6 +500,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'vigilance';
         value: number | Vigilance;
+      } | null)
+    | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -722,6 +751,22 @@ export interface VigilanceSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  nombres?: T;
+  apellidos?: T;
+  telefono?: T;
+  correo?: T;
+  formaContacto?: T;
+  mensaje?: T;
+  aceptaPoliticas?: T;
+  estado?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -759,6 +804,98 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Texts, WhatsApp number, options and privacy policy for the Contact modal
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-settings".
+ */
+export interface ContactSetting {
+  id: number;
+  /**
+   * Ej: 51957255145 → https://wa.me/51957255145
+   */
+  whatsappNumero: string;
+  whatsappMensaje?: string | null;
+  whatsappNombreAgente?: string | null;
+  whatsappRolAgente?: string | null;
+  whatsappDisponible?: boolean | null;
+  waTitulo?: string | null;
+  waSubtitulo?: string | null;
+  waBtnTexto?: string | null;
+  /**
+   * Enable / disable options. Order here is the order in the form.
+   */
+  opcionesContacto?:
+    | {
+        valor: 'whatsapp' | 'telefono' | 'correo';
+        etiqueta: string;
+        /**
+         * Opciones: message-circle, phone, mail, send, video, etc.
+         */
+        icono: string;
+        activo?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  formEyebrow?: string | null;
+  formTitulo?: string | null;
+  formBtnEnviar?: string | null;
+  formTituloExito?: string | null;
+  formSubtituloExito?: string | null;
+  /**
+   * Use {{link}} as placeholder for the clickable link.
+   */
+  politicaTexto?: string | null;
+  politicaLinkTexto?: string | null;
+  /**
+   * Ej: /politica-de-privacidad
+   */
+  politicaLinkUrl?: string | null;
+  /**
+   * Se muestra en el panel izquierdo del modal.
+   */
+  telefono?: string | null;
+  email?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-settings_select".
+ */
+export interface ContactSettingsSelect<T extends boolean = true> {
+  whatsappNumero?: T;
+  whatsappMensaje?: T;
+  whatsappNombreAgente?: T;
+  whatsappRolAgente?: T;
+  whatsappDisponible?: T;
+  waTitulo?: T;
+  waSubtitulo?: T;
+  waBtnTexto?: T;
+  opcionesContacto?:
+    | T
+    | {
+        valor?: T;
+        etiqueta?: T;
+        icono?: T;
+        activo?: T;
+        id?: T;
+      };
+  formEyebrow?: T;
+  formTitulo?: T;
+  formBtnEnviar?: T;
+  formTituloExito?: T;
+  formSubtituloExito?: T;
+  politicaTexto?: T;
+  politicaLinkTexto?: T;
+  politicaLinkUrl?: T;
+  telefono?: T;
+  email?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

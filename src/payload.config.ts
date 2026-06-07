@@ -15,9 +15,36 @@ import { Footer }    from './collections/Footer'
 import { ProductCategories } from './collections/ProductCategories'
 import { Products }           from './collections/Products'
 import { Vigilance }          from './collections/Vigilance'
+import { ContactSubmissions } from './collections/ContactSubmissions'
+import { ContactSettings }    from './globals/ContactSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// ── Orígenes permitidos ───────────────────────────────────────────────────────
+const allowedOrigins = [
+  'http://localhost:4200',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL,
+  process.env.PAYLOAD_PUBLIC_SERVER_URL,
+].filter((url): url is string => Boolean(url))
+
+// ── Plugins — Cloudinary (solo producción) ────────────────────────────────────
+// Al desplegar en Railway:
+//   1. Ejecutar: pnpm add @payloadcms/storage-cloudinary@3.84.1
+//   2. Descomentar el bloque de abajo
+//   3. Configurar las variables CLOUDINARY_* en Railway
+
+// import { cloudinaryStorage } from '@payloadcms/storage-cloudinary'
+// const cloudinaryPlugin = cloudinaryStorage({
+//   config: {
+//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME || '',
+//     api_key:    process.env.CLOUDINARY_API_KEY    || '',
+//     api_secret: process.env.CLOUDINARY_API_SECRET || '',
+//   },
+//   collections: { media: true },
+//   disableLocalStorage: true,
+// })
 
 export default buildConfig({
   admin: {
@@ -26,7 +53,12 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-serverURL: 'http://localhost:3000', // Agrégalo explícitamente aquí
+
+  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
+
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
+
   localization: {
     locales: [
       { label: 'Español', code: 'es' },
@@ -35,20 +67,24 @@ serverURL: 'http://localhost:3000', // Agrégalo explícitamente aquí
     defaultLocale: 'es',
     fallback: true,
   },
-  cors: ['http://localhost:3000','http://localhost:4200'],
-  csrf: ['http://localhost:3000','http://localhost:4200'],
 
-  collections: [Users, Media, HeroSlides, History, WhoWeAre, OurValues, Footer, ProductCategories, Products, Vigilance],
+  collections: [Users, Media, HeroSlides, History, WhoWeAre, OurValues, Footer, ProductCategories, Products, Vigilance, ContactSubmissions],
+  globals: [ContactSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
+
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
+
   sharp,
+
+  // Para activar Cloudinary en producción: ver bloque comentado arriba
   plugins: [],
 })
