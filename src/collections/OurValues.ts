@@ -33,11 +33,12 @@ export const OurValues: CollectionConfig = {
 
     // ── Título de la sección ────────────────────────────────
     {
-      name:     'sectionTitle',
-      type:     'text',
-      label:    'Título de la sección',
-      required: true,
+      name:      'sectionTitle',
+      type:      'text',
+      label:     'Título de la sección',
+      required:  true,
       defaultValue: 'Nuestros Valores',
+      localized: true,
       admin: { description: 'Ej: "Nuestros Valores" — se muestra como heading principal.' },
     },
 
@@ -77,10 +78,11 @@ export const OurValues: CollectionConfig = {
               admin: { width: '40%' },
             },
             {
-              name:     'title',
-              type:     'text',
-              label:    'Nombre del valor',
-              required: true,
+              name:      'title',
+              type:      'text',
+              label:     'Nombre del valor',
+              required:  true,
+              localized: true,
               admin: {
                 width:       '60%',
                 placeholder: 'Ej: Integridad, Conocimiento, Crecimiento…',
@@ -104,20 +106,22 @@ export const OurValues: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name:     'label',
-                  type:     'text',
-                  label:    'Etiqueta (negrita)',
-                  required: true,
+                  name:      'label',
+                  type:      'text',
+                  label:     'Etiqueta (negrita)',
+                  required:  true,
+                  localized: true,
                   admin: {
                     width:       '35%',
                     placeholder: 'Ej: Integridad',
                   },
                 },
                 {
-                  name:     'description',
-                  type:     'textarea',
-                  label:    'Descripción',
-                  required: true,
+                  name:      'description',
+                  type:      'textarea',
+                  label:     'Descripción',
+                  required:  true,
+                  localized: true,
                   admin: {
                     width:       '65%',
                     placeholder: 'Texto descriptivo del punto…',

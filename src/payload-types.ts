@@ -76,6 +76,7 @@ export interface Config {
     footer: Footer;
     'product-categories': ProductCategory;
     products: Product;
+    vigilance: Vigilance;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -92,6 +93,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    vigilance: VigilanceSelect<false> | VigilanceSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -100,10 +102,10 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('es' | 'en') | ('es' | 'en')[];
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'es' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -369,6 +371,48 @@ export interface Product {
   createdAt: string;
 }
 /**
+ * Contenido de la página de Farmacovigilancia. Solo debe existir UN documento.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vigilance".
+ */
+export interface Vigilance {
+  id: number;
+  pageTitle?: string | null;
+  /**
+   * Mismo formato que el home. Puedes usar 1 o 2 slides.
+   */
+  slides?:
+    | {
+        tag?: string | null;
+        title: string;
+        subtitle?: string | null;
+        ctaText?: string | null;
+        ctaLink?: string | null;
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Aparecen debajo del hero, de 2 en 2 (con navegación entre pares).
+   */
+  infoBlocks?:
+    | {
+        title: string;
+        style?: ('bullet' | 'numbered') | null;
+        items?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -427,6 +471,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products';
         value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'vigilance';
+        value: number | Vigilance;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -636,6 +684,39 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   featured?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vigilance_select".
+ */
+export interface VigilanceSelect<T extends boolean = true> {
+  pageTitle?: T;
+  slides?:
+    | T
+    | {
+        tag?: T;
+        title?: T;
+        subtitle?: T;
+        ctaText?: T;
+        ctaLink?: T;
+        image?: T;
+        id?: T;
+      };
+  infoBlocks?:
+    | T
+    | {
+        title?: T;
+        style?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

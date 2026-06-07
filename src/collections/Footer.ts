@@ -33,6 +33,7 @@ export const Footer: CollectionConfig = {
       type: 'textarea',
       label: 'Descripción de la marca',
       required: true,
+      localized: true,
       admin: {
         description: 'Texto breve bajo el logo (máx. 2 líneas recomendado).',
       },
@@ -80,6 +81,7 @@ export const Footer: CollectionConfig = {
           type: 'text',
           label: 'Título de la columna',
           required: true,
+          localized: true,
         },
         {
           name: 'links',
@@ -93,6 +95,7 @@ export const Footer: CollectionConfig = {
               type: 'text',
               label: 'Texto del enlace',
               required: true,
+              localized: true,
             },
             {
               name: 'url',
@@ -113,12 +116,14 @@ export const Footer: CollectionConfig = {
       label: 'Título columna Contacto',
       defaultValue: 'Contacto',
       required: true,
+      localized: true,
     },
 
     {
       name: 'address',
       type: 'textarea',
       label: 'Dirección (una línea por párrafo)',
+      localized: true,
       admin: {
         description: 'Cada salto de línea se muestra como un párrafo separado.',
       },
@@ -138,6 +143,7 @@ export const Footer: CollectionConfig = {
       label: 'Texto de copyright',
       required: true,
       defaultValue: '2026 Qrealab S.A.C. Todos los derechos reservados.',
+      localized: true,
       admin: {
         description: 'El símbolo © se agrega automáticamente al inicio.',
       },

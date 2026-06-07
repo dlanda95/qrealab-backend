@@ -15,6 +15,7 @@ export const ProductCategories: CollectionConfig = {
       type: 'text',
       label: 'Nombre de categoría',
       required: true,
+      localized: true,
     },
     {
       name: 'slug',

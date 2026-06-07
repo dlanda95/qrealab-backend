@@ -16,6 +16,7 @@ export const Products: CollectionConfig = {
       type: 'text',
       label: 'Nombre del producto',
       required: true,
+      localized: true,
     },
     {
       name: 'slug',
@@ -35,6 +36,7 @@ export const Products: CollectionConfig = {
       name: 'tagline',
       type: 'text',
       label: 'Tagline (frase corta)',
+      localized: true,
       admin: { description: 'Frase breve que aparece en la tarjeta. Máx. 80 caracteres.' },
     },
     {
@@ -46,6 +48,7 @@ export const Products: CollectionConfig = {
       name: 'description',
       type: 'textarea',
       label: 'Descripción del producto',
+      localized: true,
     },
     {
       name: 'image',
@@ -66,6 +69,7 @@ export const Products: CollectionConfig = {
           type: 'text',
           label: 'Presentación',
           required: true,
+          localized: true,
         },
       ],
     },

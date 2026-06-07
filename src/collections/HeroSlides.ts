@@ -22,17 +22,20 @@ export const HeroSlides: CollectionConfig = {
       name: 'tag',
       type: 'text',
       label: 'Etiqueta (Ej: INNOVACIÓN FARMACÉUTICA)',
+      localized: true,
     },
     {
       name: 'title',
       type: 'text',
       label: 'Título Principal',
       required: true,
+      localized: true,
     },
     {
       name: 'subtitle',
       type: 'textarea',
       label: 'Subtítulo',
+      localized: true,
     },
     {
       name: 'image',
@@ -48,6 +51,7 @@ export const HeroSlides: CollectionConfig = {
           name: 'ctaText',
           type: 'text',
           label: 'Texto del Botón',
+          localized: true,
         },
         {
           name: 'ctaLink',

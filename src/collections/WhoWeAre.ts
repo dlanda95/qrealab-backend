@@ -5,12 +5,13 @@ export const WhoWeAre: CollectionConfig = {
   admin: { useAsTitle: 'title' },
   access: { read: () => true },
   fields: [
-    { name: 'title', type: 'text', label: 'Título', required: true },
-    { 
-      name: 'description', 
+    { name: 'title', type: 'text', label: 'Título', required: true, localized: true },
+    {
+      name: 'description',
       type: 'textarea', // Usamos textarea para que tú controles los estilos en Angular
-      label: 'Descripción (puedes separar párrafos con saltos de línea)', 
-      required: true 
+      label: 'Descripción (puedes separar párrafos con saltos de línea)',
+      required: true,
+      localized: true,
     },
     { 
       name: 'image', 
