@@ -8,7 +8,9 @@ export const Media: CollectionConfig = {
     // Es CRÍTICO que sea público para que Angular pueda descargar la foto
     read: () => true, 
   },
-  upload: true, // Esto le dice a Payload que esta colección es para subir archivos
+  upload: {
+    disableLocalStorage: true, // archivos van a Cloudflare R2, no al disco local
+  },
   fields: [
     {
       name: 'alt',
