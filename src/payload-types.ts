@@ -106,10 +106,16 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('es' | 'en') | ('es' | 'en')[];
   globals: {
+    'home-settings': HomeSetting;
+    'nav-settings': NavSetting;
     'contact-settings': ContactSetting;
+    'about-settings': AboutSetting;
   };
   globalsSelect: {
+    'home-settings': HomeSettingsSelect<false> | HomeSettingsSelect<true>;
+    'nav-settings': NavSettingsSelect<false> | NavSettingsSelect<true>;
     'contact-settings': ContactSettingsSelect<false> | ContactSettingsSelect<true>;
+    'about-settings': AboutSettingsSelect<false> | AboutSettingsSelect<true>;
   };
   locale: 'es' | 'en';
   widgets: {
@@ -806,7 +812,121 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Texts, WhatsApp number, options and privacy policy for the Contact modal
+ * Home page content. Each section in its corresponding tab.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-settings".
+ */
+export interface HomeSetting {
+  id: number;
+  /**
+   * Drag to reorder. Each slide is a full screen.
+   */
+  heroSlides?:
+    | {
+        /**
+         * Ej: INNOVACIÓN FARMACÉUTICA
+         */
+        tag?: string | null;
+        title: string;
+        subtitle?: string | null;
+        image: number | Media;
+        /**
+         * Ej: Ver productos
+         */
+        ctaText?: string | null;
+        /**
+         * Ej: /products
+         */
+        ctaLink?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  histTitle: string;
+  /**
+   * Separa párrafos con saltos de línea.
+   */
+  histDescription: string;
+  histImage?: (number | null) | Media;
+  whoTitle: string;
+  /**
+   * Separa párrafos con saltos de línea.
+   */
+  whoDescription: string;
+  whoImage?: (number | null) | Media;
+  valSectionTitle: string;
+  /**
+   * Imagen con forma de hoja (opcional)
+   */
+  valImage?: (number | null) | Media;
+  /**
+   * Cada valor tiene un ícono, un título y sus puntos descriptivos.
+   */
+  values?:
+    | {
+        icon:
+          | 'heart'
+          | 'lightbulb'
+          | 'trending-up'
+          | 'shield'
+          | 'star'
+          | 'users'
+          | 'award'
+          | 'target'
+          | 'leaf'
+          | 'hand-heart'
+          | 'brain'
+          | 'book-open'
+          | 'rocket'
+          | 'circle-check';
+        title: string;
+        points?:
+          | {
+              label: string;
+              description: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Navigation menu items and contact button text. Enable or disable each item without deleting it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav-settings".
+ */
+export interface NavSetting {
+  id: number;
+  /**
+   * Deactivate an item to hide it without deleting it.
+   */
+  items?:
+    | {
+        etiqueta: string;
+        /**
+         * Ej: /about · /products
+         */
+        ruta: string;
+        /**
+         * Activa o desactiva por idioma de forma independiente.
+         */
+        activo?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Ej: Contáctenos · Hablar con nosotros · Contact Us
+   */
+  ctaLabel?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Texts, WhatsApp data, contact options and privacy policy for the Contact modal.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-settings".
@@ -814,38 +934,44 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface ContactSetting {
   id: number;
   /**
-   * Ej: 51957255145 → https://wa.me/51957255145
+   * Ej: 51957255145  →  wa.me/51957255145
    */
   whatsappNumero: string;
-  whatsappMensaje?: string | null;
+  whatsappDisponible?: boolean | null;
   whatsappNombreAgente?: string | null;
   whatsappRolAgente?: string | null;
-  whatsappDisponible?: boolean | null;
+  /**
+   * El usuario puede editarlo antes de enviar
+   */
+  whatsappMensaje?: string | null;
   waTitulo?: string | null;
   waSubtitulo?: string | null;
   waBtnTexto?: string | null;
   /**
-   * Enable / disable options. Order here is the order in the form.
+   * Enable or disable options. Order here is the order in the form.
    */
   opcionesContacto?:
     | {
         valor: 'whatsapp' | 'telefono' | 'correo';
         etiqueta: string;
         /**
-         * Opciones: message-circle, phone, mail, send, video, etc.
+         * message-circle · phone · mail · send
          */
         icono: string;
         activo?: boolean | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Ej: "Contáctanos"
+   */
   formEyebrow?: string | null;
   formTitulo?: string | null;
   formBtnEnviar?: string | null;
   formTituloExito?: string | null;
   formSubtituloExito?: string | null;
   /**
-   * Use {{link}} as placeholder for the clickable link.
+   * Use {{link}} as placeholder where the clickable link will appear.
    */
   politicaTexto?: string | null;
   politicaLinkTexto?: string | null;
@@ -854,7 +980,7 @@ export interface ContactSetting {
    */
   politicaLinkUrl?: string | null;
   /**
-   * Se muestra en el panel izquierdo del modal.
+   * Se muestra en el panel izquierdo del modal
    */
   telefono?: string | null;
   email?: string | null;
@@ -862,15 +988,171 @@ export interface ContactSetting {
   createdAt?: string | null;
 }
 /**
+ * Content for the "About Us" page. Edit each section in its corresponding tab.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-settings".
+ */
+export interface AboutSetting {
+  id: number;
+  /**
+   * Ej: "Nosotros" · Aparece en verde sobre el título principal
+   */
+  heroEyebrow?: string | null;
+  /**
+   * Título grande de la sección
+   */
+  heroTitulo?: string | null;
+  /**
+   * Texto secundario en color apagado, debajo del título
+   */
+  heroSubtitulo?: string | null;
+  heroDescripcion?: string | null;
+  /**
+   * Se mostrará en el elemento decorativo de la portada
+   */
+  heroImagen?: (number | null) | Media;
+  heroStats?:
+    | {
+        /**
+         * Ej: 15+
+         */
+        valor: string;
+        /**
+         * Ej: Años de experiencia
+         */
+        etiqueta: string;
+        id?: string | null;
+      }[]
+    | null;
+  misionTitulo?: string | null;
+  /**
+   * target · heart · shield · leaf · star · award · hand-heart · lightbulb
+   */
+  misionIcono?: string | null;
+  misionTexto?: string | null;
+  visionTitulo?: string | null;
+  /**
+   * eye · trending-up · globe · rocket · book-open · brain
+   */
+  visionIcono?: string | null;
+  visionTexto?: string | null;
+  /**
+   * Ej: "Nuestro Equipo"
+   */
+  equipoEyebrow?: string | null;
+  equipoTitulo?: string | null;
+  /**
+   * Each group appears as a tab on the site. Add members within each group.
+   */
+  equipoGrupos?:
+    | {
+        nombre: string;
+        miembros?:
+          | {
+              nombre: string;
+              cargo?: string | null;
+              foto?: (number | null) | Media;
+              /**
+               * https://linkedin.com/in/nombre
+               */
+              linkedin?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Ej: "Aliados Estratégicos"
+   */
+  aliadosEyebrow?: string | null;
+  aliadosTitulo?: string | null;
+  aliadosSubtitulo?: string | null;
+  aliados?:
+    | {
+        nombre: string;
+        /**
+         * Ej: https://laboratorioalpha.com
+         */
+        url?: string | null;
+        logo?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-settings_select".
+ */
+export interface HomeSettingsSelect<T extends boolean = true> {
+  heroSlides?:
+    | T
+    | {
+        tag?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+        ctaText?: T;
+        ctaLink?: T;
+        id?: T;
+      };
+  histTitle?: T;
+  histDescription?: T;
+  histImage?: T;
+  whoTitle?: T;
+  whoDescription?: T;
+  whoImage?: T;
+  valSectionTitle?: T;
+  valImage?: T;
+  values?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        points?:
+          | T
+          | {
+              label?: T;
+              description?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav-settings_select".
+ */
+export interface NavSettingsSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        etiqueta?: T;
+        ruta?: T;
+        activo?: T;
+        id?: T;
+      };
+  ctaLabel?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-settings_select".
  */
 export interface ContactSettingsSelect<T extends boolean = true> {
   whatsappNumero?: T;
-  whatsappMensaje?: T;
+  whatsappDisponible?: T;
   whatsappNombreAgente?: T;
   whatsappRolAgente?: T;
-  whatsappDisponible?: T;
+  whatsappMensaje?: T;
   waTitulo?: T;
   waSubtitulo?: T;
   waBtnTexto?: T;
@@ -893,6 +1175,61 @@ export interface ContactSettingsSelect<T extends boolean = true> {
   politicaLinkUrl?: T;
   telefono?: T;
   email?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-settings_select".
+ */
+export interface AboutSettingsSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroTitulo?: T;
+  heroSubtitulo?: T;
+  heroDescripcion?: T;
+  heroImagen?: T;
+  heroStats?:
+    | T
+    | {
+        valor?: T;
+        etiqueta?: T;
+        id?: T;
+      };
+  misionTitulo?: T;
+  misionIcono?: T;
+  misionTexto?: T;
+  visionTitulo?: T;
+  visionIcono?: T;
+  visionTexto?: T;
+  equipoEyebrow?: T;
+  equipoTitulo?: T;
+  equipoGrupos?:
+    | T
+    | {
+        nombre?: T;
+        miembros?:
+          | T
+          | {
+              nombre?: T;
+              cargo?: T;
+              foto?: T;
+              linkedin?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  aliadosEyebrow?: T;
+  aliadosTitulo?: T;
+  aliadosSubtitulo?: T;
+  aliados?:
+    | T
+    | {
+        nombre?: T;
+        url?: T;
+        logo?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

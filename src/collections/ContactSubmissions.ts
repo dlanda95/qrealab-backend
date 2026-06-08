@@ -125,8 +125,10 @@ const notifyByEmail: CollectionAfterChangeHook = async ({ doc, operation }) => {
 // ── Colección ────────────────────────────────────────────────────────────────
 export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
+  labels: { singular: 'Formulario Recibido', plural: 'Formularios Recibidos' },
 
   admin: {
+    group: 'Contacto',
     useAsTitle: 'nombres',
     description: 'Formularios de contacto recibidos desde el sitio web.',
     defaultColumns: ['nombres', 'apellidos', 'correo', 'formaContacto', 'estado', 'createdAt'],

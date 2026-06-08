@@ -17,6 +17,9 @@ import { Products }           from './collections/Products'
 import { Vigilance }          from './collections/Vigilance'
 import { ContactSubmissions } from './collections/ContactSubmissions'
 import { ContactSettings }    from './globals/ContactSettings'
+import { AboutSettings }      from './globals/AboutSettings'
+import { NavSettings }        from './globals/NavSettings'
+import { HomeSettings }       from './globals/HomeSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -69,7 +72,7 @@ export default buildConfig({
   },
 
   collections: [Users, Media, HeroSlides, History, WhoWeAre, OurValues, Footer, ProductCategories, Products, Vigilance, ContactSubmissions],
-  globals: [ContactSettings],
+  globals: [HomeSettings, NavSettings, ContactSettings, AboutSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
 

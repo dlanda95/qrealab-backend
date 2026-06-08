@@ -2,11 +2,13 @@ import type { CollectionConfig } from 'payload'
 
 export const HeroSlides: CollectionConfig = {
   slug: 'hero-slides',
+  labels: { singular: 'Slide del Hero', plural: 'Slides del Hero' },
 
   orderable: true,
   defaultSort: '_order',
 
   admin: {
+    hidden: true,
     useAsTitle: 'tag',
     defaultColumns: ['_order', 'tag', 'title', 'updatedAt'],
     listSearchableFields: ['tag', 'title'],

@@ -13,8 +13,10 @@ import type { CollectionConfig } from 'payload'
 
 export const Footer: CollectionConfig = {
   slug: 'footer',
+  labels: { singular: 'Pie de Página', plural: 'Pie de Página' },
 
   admin: {
+    group: 'Navegación',
     useAsTitle: 'copyrightText',
     defaultColumns: ['copyrightText', 'updatedAt'],
     description: 'Contenido del pie de página. Solo debe existir UN documento.',

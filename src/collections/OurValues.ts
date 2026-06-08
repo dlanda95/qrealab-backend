@@ -20,8 +20,10 @@ const ICON_OPTIONS = [
 
 export const OurValues: CollectionConfig = {
   slug: 'our-values',
+  labels: { singular: 'Nuestros Valores', plural: 'Nuestros Valores' },
 
   admin: {
+    hidden: true,
     useAsTitle:     'sectionTitle',
     description:    'Esta colección controla la sección "Nuestros Valores" del Home. Crea un único documento.',
     defaultColumns: ['sectionTitle', 'updatedAt'],

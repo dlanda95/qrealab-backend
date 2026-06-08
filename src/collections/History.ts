@@ -2,7 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 export const History: CollectionConfig = {
   slug: 'history',
-  admin: { useAsTitle: 'title' },
+  labels: { singular: 'Historia', plural: 'Historias' },
+  admin: { hidden: true, useAsTitle: 'title' },
   access: { read: () => true },
   fields: [
     {

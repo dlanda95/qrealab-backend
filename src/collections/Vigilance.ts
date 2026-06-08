@@ -7,7 +7,10 @@ import type { CollectionConfig } from 'payload'
 
 export const Vigilance: CollectionConfig = {
   slug: 'vigilance',
+  labels: { singular: 'Farmacovigilancia', plural: 'Farmacovigilancia' },
   admin: {
+    group: 'Páginas',
+    // Página: Farmacovigilancia — singleton (un documento)
     useAsTitle: 'pageTitle',
     description: 'Contenido de la página de Farmacovigilancia. Solo debe existir UN documento.',
   },

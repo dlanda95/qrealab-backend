@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  labels: { singular: 'Archivo', plural: 'Medios / Archivos' },
+  admin: { group: 'Medios' },
   access: {
     // Es CRÍTICO que sea público para que Angular pueda descargar la foto
     read: () => true, 

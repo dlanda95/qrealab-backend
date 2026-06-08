@@ -2,7 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 export const WhoWeAre: CollectionConfig = {
   slug: 'whoweare',
-  admin: { useAsTitle: 'title' },
+  labels: { singular: 'Quiénes Somos', plural: 'Quiénes Somos' },
+  admin: { hidden: true, useAsTitle: 'title' },
   access: { read: () => true },
   fields: [
     { name: 'title', type: 'text', label: 'Título', required: true, localized: true },

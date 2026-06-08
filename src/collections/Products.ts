@@ -2,9 +2,11 @@ import type { CollectionConfig } from 'payload'
 
 export const Products: CollectionConfig = {
   slug: 'products',
+  labels: { singular: 'Producto', plural: 'Productos' },
   orderable: true,
   defaultSort: '_order',
   admin: {
+    group: 'Catálogo',
     useAsTitle: 'name',
     defaultColumns: ['_order', 'name', 'category', 'status', 'updatedAt'],
     listSearchableFields: ['name', 'activeIngredient'],
