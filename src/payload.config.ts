@@ -29,7 +29,7 @@ const dirname  = path.dirname(filename)
 const allowedOrigins = [
   'http://localhost:4200',
   'http://localhost:3000',
-  process.env.FRONTEND_URL,
+  ...(process.env.FRONTEND_URL?.split(',').map(u => u.trim()) ?? []),
   process.env.PAYLOAD_PUBLIC_SERVER_URL,
 ].filter((url): url is string => Boolean(url))
 
