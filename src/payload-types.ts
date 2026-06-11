@@ -78,6 +78,7 @@ export interface Config {
     products: Product;
     vigilance: Vigilance;
     'contact-submissions': ContactSubmission;
+    'pharmavigilance-submissions': PharmavigilanceSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -96,6 +97,7 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     vigilance: VigilanceSelect<false> | VigilanceSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
+    'pharmavigilance-submissions': PharmavigilanceSubmissionsSelect<false> | PharmavigilanceSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -110,12 +112,14 @@ export interface Config {
     'nav-settings': NavSetting;
     'contact-settings': ContactSetting;
     'about-settings': AboutSetting;
+    'pharmavigilance-settings': PharmavigilanceSetting;
   };
   globalsSelect: {
     'home-settings': HomeSettingsSelect<false> | HomeSettingsSelect<true>;
     'nav-settings': NavSettingsSelect<false> | NavSettingsSelect<true>;
     'contact-settings': ContactSettingsSelect<false> | ContactSettingsSelect<true>;
     'about-settings': AboutSettingsSelect<false> | AboutSettingsSelect<true>;
+    'pharmavigilance-settings': PharmavigilanceSettingsSelect<false> | PharmavigilanceSettingsSelect<true>;
   };
   locale: 'es' | 'en';
   widgets: {
@@ -392,21 +396,15 @@ export interface Vigilance {
   id: number;
   pageTitle?: string | null;
   /**
-   * Mismo formato que el home. Puedes usar 1 o 2 slides.
+   * Texto pequeño en verde sobre el título.
    */
-  slides?:
-    | {
-        tag?: string | null;
-        title: string;
-        subtitle?: string | null;
-        ctaText?: string | null;
-        ctaLink?: string | null;
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
+  heroEyebrow?: string | null;
+  heroTitulo?: string | null;
+  heroSubtitulo?: string | null;
+  infoEyebrow?: string | null;
+  infoTitulo?: string | null;
   /**
-   * Aparecen debajo del hero, de 2 en 2 (con navegación entre pares).
+   * Aparecen de 2 en 2, con navegación entre pares.
    */
   infoBlocks?:
     | {
@@ -440,6 +438,32 @@ export interface ContactSubmission {
   mensaje?: string | null;
   aceptaPoliticas: boolean;
   estado?: ('nuevo' | 'seguimiento' | 'contactado' | 'cerrado') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Reportes de efectos adversos recibidos desde el sitio web.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pharmavigilance-submissions".
+ */
+export interface PharmavigilanceSubmission {
+  id: number;
+  nombreRemitente?: string | null;
+  correoRemitente?: string | null;
+  /**
+   * Todas las respuestas enviadas desde el formulario web.
+   */
+  respuestas?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  estado?: ('nuevo' | 'revision' | 'procesado' | 'cerrado') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -510,6 +534,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contact-submissions';
         value: number | ContactSubmission;
+      } | null)
+    | ({
+        relationTo: 'pharmavigilance-submissions';
+        value: number | PharmavigilanceSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -728,17 +756,11 @@ export interface ProductsSelect<T extends boolean = true> {
  */
 export interface VigilanceSelect<T extends boolean = true> {
   pageTitle?: T;
-  slides?:
-    | T
-    | {
-        tag?: T;
-        title?: T;
-        subtitle?: T;
-        ctaText?: T;
-        ctaLink?: T;
-        image?: T;
-        id?: T;
-      };
+  heroEyebrow?: T;
+  heroTitulo?: T;
+  heroSubtitulo?: T;
+  infoEyebrow?: T;
+  infoTitulo?: T;
   infoBlocks?:
     | T
     | {
@@ -767,6 +789,18 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   formaContacto?: T;
   mensaje?: T;
   aceptaPoliticas?: T;
+  estado?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pharmavigilance-submissions_select".
+ */
+export interface PharmavigilanceSubmissionsSelect<T extends boolean = true> {
+  nombreRemitente?: T;
+  correoRemitente?: T;
+  respuestas?: T;
   estado?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1084,6 +1118,54 @@ export interface AboutSetting {
   createdAt?: string | null;
 }
 /**
+ * Define las secciones y campos del formulario de reporte de efectos adversos.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pharmavigilance-settings".
+ */
+export interface PharmavigilanceSetting {
+  id: number;
+  titulo?: string | null;
+  subtitulo?: string | null;
+  descripcion?: string | null;
+  /**
+   * Cada sección agrupa campos relacionados.
+   */
+  secciones?:
+    | {
+        titulo: string;
+        campos?:
+          | {
+              /**
+               * Sin espacios. Ej: nombreCompleto
+               */
+              clave: string;
+              etiqueta: string;
+              tipo: 'text' | 'email' | 'number' | 'date' | 'textarea' | 'radio' | 'select';
+              ancho?: ('full' | 'half' | 'third') | null;
+              requerido?: boolean | null;
+              activo?: boolean | null;
+              placeholder?: string | null;
+              opciones?:
+                | {
+                    valor: string;
+                    etiqueta: string;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  emailContacto?: string | null;
+  telefonoContacto?: string | null;
+  direccionContacto?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-settings_select".
  */
@@ -1230,6 +1312,46 @@ export interface AboutSettingsSelect<T extends boolean = true> {
         logo?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pharmavigilance-settings_select".
+ */
+export interface PharmavigilanceSettingsSelect<T extends boolean = true> {
+  titulo?: T;
+  subtitulo?: T;
+  descripcion?: T;
+  secciones?:
+    | T
+    | {
+        titulo?: T;
+        campos?:
+          | T
+          | {
+              clave?: T;
+              etiqueta?: T;
+              tipo?: T;
+              ancho?: T;
+              requerido?: T;
+              activo?: T;
+              placeholder?: T;
+              opciones?:
+                | T
+                | {
+                    valor?: T;
+                    etiqueta?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  emailContacto?: T;
+  telefonoContacto?: T;
+  direccionContacto?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

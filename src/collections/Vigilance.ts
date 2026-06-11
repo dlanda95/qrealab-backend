@@ -16,117 +16,120 @@ export const Vigilance: CollectionConfig = {
   },
   access: { read: () => true },
   fields: [
-
-    // ── Identificación interna ───────────────────────────────
     {
       name: 'pageTitle',
       type: 'text',
       label: 'Título de página (interno CMS)',
       defaultValue: 'Farmacovigilancia',
+      admin: { position: 'sidebar' },
     },
 
-    // ── Slides del hero ──────────────────────────────────────
     {
-      name: 'slides',
-      type: 'array',
-      label: 'Slides del hero (1–2)',
-      minRows: 1,
-      maxRows: 2,
-      admin: {
-        description: 'Mismo formato que el home. Puedes usar 1 o 2 slides.',
-      },
-      fields: [
+      type: 'tabs',
+      tabs: [
+        // ── Tab 1: Hero ────────────────────────────────────────
         {
-          name: 'tag',
-          type: 'text',
-          label: 'Etiqueta superior (ej: FARMACOVIGILANCIA)',
-          localized: true,
-        },
-        {
-          name: 'title',
-          type: 'text',
-          label: 'Título principal',
-          required: true,
-          localized: true,
-        },
-        {
-          name: 'subtitle',
-          type: 'textarea',
-          label: 'Descripción / subtítulo',
-          localized: true,
-        },
-        {
-          type: 'row',
+          label: 'Hero',
+          description: 'Textos del encabezado principal de la página.',
           fields: [
             {
-              name: 'ctaText',
+              name: 'heroEyebrow',
               type: 'text',
-              label: 'Texto del botón (ej: VER MÁS)',
+              label: 'Etiqueta (eyebrow)',
               localized: true,
+              defaultValue: 'Farmacovigilancia',
+              admin: { description: 'Texto pequeño en verde sobre el título.' },
             },
             {
-              name: 'ctaLink',
+              name: 'heroTitulo',
               type: 'text',
-              label: 'Enlace del botón',
-              defaultValue: '#informacion',
+              label: 'Título principal',
+              localized: true,
+              defaultValue: 'Tu seguridad, nuestra responsabilidad',
+            },
+            {
+              name: 'heroSubtitulo',
+              type: 'textarea',
+              label: 'Subtítulo / Descripción',
+              localized: true,
+              defaultValue: 'Reporta cualquier efecto adverso de nuestros medicamentos y contribuye a la seguridad de todos los pacientes.',
             },
           ],
         },
+
+        // ── Tab 2: Bloques de Información ──────────────────────
         {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          label: 'Imagen de fondo',
-          required: true,
+          label: 'Bloques de Información',
+          description: 'Encabezado y bloques de contenido que aparecen debajo del hero.',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'infoEyebrow',
+                  type: 'text',
+                  label: 'Etiqueta (eyebrow)',
+                  localized: true,
+                  defaultValue: 'Información Importante',
+                  admin: { width: '50%' },
+                },
+                {
+                  name: 'infoTitulo',
+                  type: 'text',
+                  label: 'Título de la sección',
+                  localized: true,
+                  defaultValue: '¿Qué necesitas saber?',
+                  admin: { width: '50%' },
+                },
+              ],
+            },
+            {
+              name: 'infoBlocks',
+              type: 'array',
+              label: 'Bloques de información',
+              minRows: 1,
+              maxRows: 8,
+              admin: {
+                description: 'Aparecen de 2 en 2, con navegación entre pares.',
+              },
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  label: 'Título del bloque',
+                  required: true,
+                  localized: true,
+                },
+                {
+                  name: 'style',
+                  type: 'select',
+                  label: 'Estilo de lista',
+                  defaultValue: 'bullet',
+                  options: [
+                    { label: 'Viñetas (•)',       value: 'bullet'   },
+                    { label: 'Numerada (1. 2. …)', value: 'numbered' },
+                  ],
+                },
+                {
+                  name: 'items',
+                  type: 'array',
+                  label: 'Elementos de la lista',
+                  minRows: 1,
+                  fields: [
+                    {
+                      name: 'text',
+                      type: 'text',
+                      label: 'Texto',
+                      required: true,
+                      localized: true,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
       ],
     },
-
-    // ── Bloques de información ───────────────────────────────
-    {
-      name: 'infoBlocks',
-      type: 'array',
-      label: 'Bloques de información',
-      minRows: 1,
-      maxRows: 8,
-      admin: {
-        description: 'Aparecen debajo del hero, de 2 en 2 (con navegación entre pares).',
-      },
-      fields: [
-        {
-          name: 'title',
-          type: 'text',
-          label: 'Título del bloque',
-          required: true,
-          localized: true,
-        },
-        {
-          name: 'style',
-          type: 'select',
-          label: 'Estilo de lista',
-          defaultValue: 'bullet',
-          options: [
-            { label: 'Viñetas (•)', value: 'bullet' },
-            { label: 'Numerada (1. 2. …)', value: 'numbered' },
-          ],
-        },
-        {
-          name: 'items',
-          type: 'array',
-          label: 'Elementos de la lista',
-          minRows: 1,
-          fields: [
-            {
-              name: 'text',
-              type: 'text',
-              label: 'Texto',
-              required: true,
-              localized: true,
-            },
-          ],
-        },
-      ],
-    },
-
   ],
 }

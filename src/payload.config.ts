@@ -16,8 +16,10 @@ import { Footer }            from './collections/Footer'
 import { ProductCategories } from './collections/ProductCategories'
 import { Products }          from './collections/Products'
 import { Vigilance }         from './collections/Vigilance'
-import { ContactSubmissions } from './collections/ContactSubmissions'
-import { ContactSettings }   from './globals/ContactSettings'
+import { ContactSubmissions }          from './collections/ContactSubmissions'
+import { PharmavigilanceSubmissions }  from './collections/PharmavigilanceSubmissions'
+import { ContactSettings }             from './globals/ContactSettings'
+import { PharmavigilanceSettings }     from './globals/PharmavigilanceSettings'
 import { AboutSettings }     from './globals/AboutSettings'
 import { NavSettings }       from './globals/NavSettings'
 import { HomeSettings }      from './globals/HomeSettings'
@@ -81,9 +83,9 @@ export default buildConfig({
     Users, Media,
     HeroSlides, History, WhoWeAre, OurValues,
     Footer, ProductCategories, Products, Vigilance,
-    ContactSubmissions,
+    ContactSubmissions, PharmavigilanceSubmissions,
   ],
-  globals:  [HomeSettings, NavSettings, ContactSettings, AboutSettings],
+  globals:  [HomeSettings, NavSettings, ContactSettings, AboutSettings, PharmavigilanceSettings],
   editor:   lexicalEditor(),
   secret:   process.env.PAYLOAD_SECRET || '',
 
