@@ -70,6 +70,12 @@ export default buildConfig({
   cors: allowedOrigins,
   csrf: allowedOrigins,
 
+  // Deshabilitar GraphQL Playground en producción — expone toda la estructura
+  // de la BD a cualquier usuario anónimo que visite /api/graphql-playground
+  graphQL: {
+    disablePlaygroundInProduction: true,
+  },
+
   localization: {
     locales: [
       { label: 'Español', code: 'es' },
