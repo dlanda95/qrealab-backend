@@ -7,7 +7,10 @@ export const Users: CollectionConfig = {
     group: 'Administración',
     useAsTitle: 'email',
   },
-  auth: true,
+  auth: {
+    lockTime:         10 * 60 * 1000,   // bloqueo de 10 min tras intentos fallidos
+    maxLoginAttempts: 5,                 // 5 intentos antes de bloquear
+  },
   fields: [
     // Email added by default
     // Add more fields as needed
