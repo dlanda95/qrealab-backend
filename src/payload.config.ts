@@ -8,6 +8,7 @@ import sharp from 'sharp'
 
 import { Users }             from './collections/Users'
 import { Media }             from './collections/Media'
+import { Documents }         from './collections/Documents'
 import { HeroSlides }        from './collections/HeroSlides'
 import { History }           from './collections/History'
 import { WhoWeAre }          from './collections/WhoWeAre'
@@ -44,6 +45,11 @@ const r2Plugin = s3Storage({
   collections: {
     media: {
       // URL pública directa desde Cloudflare CDN — no pasa por el servidor de Payload
+      generateFileURL: ({ filename }) =>
+        `${process.env.R2_PUBLIC_URL}/${filename}`,
+      disableLocalStorage: true,
+    },
+    documents: {
       generateFileURL: ({ filename }) =>
         `${process.env.R2_PUBLIC_URL}/${filename}`,
       disableLocalStorage: true,
@@ -87,7 +93,7 @@ export default buildConfig({
   },
 
   collections: [
-    Users, Media,
+    Users, Media, Documents,
     HeroSlides, History, WhoWeAre, OurValues,
     Footer, ProductCategories, Products, Vigilance,
     ContactSubmissions, PharmavigilanceSubmissions,

@@ -1,6 +1,7 @@
 import * as migration_20260608_231049    from './20260608_231049';
 import * as migration_20260612_143500    from './20260612_143500';
 import * as migration_20260615_site_features from './20260615_site_features';
+import * as migration_20260616_product_inserto from './20260616_product_inserto';
 
 export const migrations = [
   {
@@ -17,5 +18,10 @@ export const migrations = [
     up:   migration_20260615_site_features.up,
     down: migration_20260615_site_features.down,
     name: '20260615_site_features',
+  },
+  {
+    up:   migration_20260616_product_inserto.up,
+    down: migration_20260616_product_inserto.down,
+    name: '20260616_product_inserto',
   },
 ];

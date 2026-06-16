@@ -59,6 +59,18 @@ export const Products: CollectionConfig = {
       label: 'Imagen principal',
     },
     {
+      name: 'inserto',
+      type: 'upload',
+      relationTo: 'documents',
+      label: { es: 'Inserto / Ficha técnica', en: 'Insert / Technical sheet' },
+      admin: {
+        description: {
+          es: 'PDF, Word o PowerPoint. Máx. 5 MB. Aparece como botón de descarga en el detalle del producto. Dejar vacío si el producto no tiene inserto.',
+          en: 'PDF, Word, or PowerPoint. Max 5 MB. Shown as a download button on the product detail page. Leave empty if the product has no insert.',
+        },
+      },
+    },
+    {
       name: 'presentations',
       type: 'array',
       label: 'Presentaciones',
