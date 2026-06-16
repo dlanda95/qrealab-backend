@@ -23,6 +23,7 @@ import { PharmavigilanceSettings }     from './globals/PharmavigilanceSettings'
 import { AboutSettings }     from './globals/AboutSettings'
 import { NavSettings }       from './globals/NavSettings'
 import { HomeSettings }      from './globals/HomeSettings'
+import { SiteSettings }      from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname  = path.dirname(filename)
@@ -91,7 +92,7 @@ export default buildConfig({
     Footer, ProductCategories, Products, Vigilance,
     ContactSubmissions, PharmavigilanceSubmissions,
   ],
-  globals:  [HomeSettings, NavSettings, ContactSettings, AboutSettings, PharmavigilanceSettings],
+  globals:  [HomeSettings, NavSettings, ContactSettings, AboutSettings, PharmavigilanceSettings, SiteSettings],
   editor:   lexicalEditor(),
   secret:   process.env.PAYLOAD_SECRET || '',
 

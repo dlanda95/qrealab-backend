@@ -306,6 +306,18 @@ export const AboutSettings: GlobalConfig = {
           description: 'Socios y aliados estratégicos de la empresa',
           fields: [
             {
+              name: 'aliadosMostrar',
+              type: 'checkbox',
+              label: { es: 'Mostrar sección "Aliados Estratégicos" en el sitio', en: 'Show "Strategic Allies" section on the site' },
+              defaultValue: true,
+              admin: {
+                description: {
+                  es: 'Desactiva para ocultar esta sección completamente sin borrar los datos.',
+                  en: 'Disable to hide this section completely without deleting the data.',
+                },
+              },
+            },
+            {
               name: 'aliadosEyebrow',
               type: 'text',
               label: { es: 'Etiqueta pequeña de sección', en: 'Small section label' },
