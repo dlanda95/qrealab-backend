@@ -132,9 +132,29 @@ export const Footer: CollectionConfig = {
     },
 
     {
+      name: 'contactEmails',
+      type: 'array',
+      label: 'Emails de contacto',
+      minRows: 0,
+      maxRows: 5,
+      admin: {
+        description: 'Agrega uno o más emails que aparecerán en el footer.',
+      },
+      fields: [
+        {
+          name: 'email',
+          type: 'email',
+          label: 'Email',
+          required: true,
+        },
+      ],
+    },
+
+    {
       name: 'contactEmail',
       type: 'email',
-      label: 'Email de contacto',
+      label: 'Email de contacto (legado — no editar)',
+      admin: { hidden: true },
     },
 
     // ── Barra inferior ───────────────────────────────────────
