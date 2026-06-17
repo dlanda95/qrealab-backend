@@ -1,4 +1,40 @@
-import type { CollectionConfig, CollectionAfterChangeHook } from 'payload'
+import type { CollectionConfig, CollectionAfterChangeHook, CollectionBeforeOperationHook } from 'payload'
+
+// ── HTML escaping — previene XSS en plantillas de email ──────────────────────
+function escapeHtml(val: unknown): string {
+  return String(val ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+// ── Rate limiting en memoria — máx. 5 envíos por IP cada 10 min ──────────────
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
+const RATE_WINDOW_MS = 10 * 60 * 1000
+const RATE_MAX       = 5
+
+function checkRateLimit(ip: string): void {
+  const now   = Date.now()
+  const entry = rateLimitStore.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return
+  }
+  if (entry.count >= RATE_MAX) {
+    throw new Error('Demasiadas solicitudes. Por favor, espere unos minutos e intente nuevamente.')
+  }
+  entry.count++
+}
+
+const rateLimit: CollectionBeforeOperationHook = ({ args, operation }) => {
+  if (operation !== 'create') return args
+  const forwarded = args.req?.headers?.get?.('x-forwarded-for') ?? ''
+  const ip = (typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : '') || 'unknown'
+  checkRateLimit(ip)
+  return args
+}
 
 function buildEmailHtml(doc: any): string {
   const respuestas: Record<string, string> = doc.respuestas ?? {}
@@ -7,11 +43,13 @@ function buildEmailHtml(doc: any): string {
     .filter(([, v]) => v !== '' && v !== null && v !== undefined)
     .map(([k, v]) => `
       <tr>
-        <td style="padding:8px 14px;background:#EEF2FF;border-radius:6px;font-size:12px;color:#5C6478;font-weight:600;width:220px;vertical-align:top;">${k}</td>
-        <td style="padding:8px 14px;font-size:13px;color:#1A1A2E;">${v}</td>
+        <td style="padding:8px 14px;background:#EEF2FF;border-radius:6px;font-size:12px;color:#5C6478;font-weight:600;width:220px;vertical-align:top;">${escapeHtml(k)}</td>
+        <td style="padding:8px 14px;font-size:13px;color:#1A1A2E;">${escapeHtml(v)}</td>
       </tr>
       <tr><td colspan="2" style="height:4px;"></td></tr>
     `).join('')
+
+  const remitente = escapeHtml(doc.nombreRemitente ?? 'Anónimo')
 
   return `
 <!DOCTYPE html>
@@ -24,7 +62,7 @@ function buildEmailHtml(doc: any): string {
         <tr><td style="background:#0A1145;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
           <p style="color:#2EC643;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 6px;">Nuevo reporte</p>
           <h1 style="color:#ffffff;font-size:20px;font-weight:800;margin:0;">Reporte de Farmacovigilancia</h1>
-          <p style="color:rgba(255,255,255,0.55);font-size:13px;margin:6px 0 0;">Remitente: ${doc.nombreRemitente ?? 'Anónimo'}</p>
+          <p style="color:rgba(255,255,255,0.55);font-size:13px;margin:6px 0 0;">Remitente: ${remitente}</p>
         </td></tr>
         <tr><td style="background:#ffffff;padding:32px;">
           <table width="100%" cellpadding="0" cellspacing="0">${rows}</table>
@@ -85,7 +123,10 @@ export const PharmavigilanceSubmissions: CollectionConfig = {
     delete: ({ req: { user } }) => Boolean(user),
   },
 
-  hooks: { afterChange: [notifyByEmail] },
+  hooks: {
+    beforeOperation: [rateLimit],
+    afterChange: [notifyByEmail],
+  },
 
   fields: [
     {

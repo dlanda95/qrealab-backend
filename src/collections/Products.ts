@@ -25,6 +25,11 @@ export const Products: CollectionConfig = {
       type: 'text',
       label: 'Slug (URL)',
       required: true,
+      validate: (val: unknown) => {
+        if (typeof val !== 'string' || val.trim() === '') return 'El slug es obligatorio.'
+        if (!/^[a-z0-9-]+$/.test(val)) return 'El slug solo puede contener letras minúsculas, números y guiones (-).'
+        return true
+      },
       admin: { description: 'Ej: cardiotrex-10mg (sin espacios, en minúsculas)' },
     },
     {
