@@ -1,10 +1,46 @@
-import type { CollectionConfig, CollectionAfterChangeHook } from 'payload'
+import type { CollectionConfig, CollectionAfterChangeHook, CollectionBeforeOperationHook } from 'payload'
 
 // ============================================================
 //  CONTACT SUBMISSIONS
 //  Almacena todos los formularios de contacto enviados.
 //  Envía email a info@qrealab.com via Resend (si RESEND_API_KEY está configurado).
 // ============================================================
+
+// ── HTML escaping — previene XSS en plantillas de email ──────────────────────
+function escapeHtml(val: unknown): string {
+  return String(val ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+// ── Rate limiting en memoria — máx. 5 envíos por IP cada 10 min ──────────────
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
+const RATE_WINDOW_MS = 10 * 60 * 1000
+const RATE_MAX       = 5
+
+function checkRateLimit(ip: string): void {
+  const now   = Date.now()
+  const entry = rateLimitStore.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return
+  }
+  if (entry.count >= RATE_MAX) {
+    throw new Error('Demasiadas solicitudes. Por favor, espere unos minutos e intente nuevamente.')
+  }
+  entry.count++
+}
+
+const rateLimit: CollectionBeforeOperationHook = ({ args, operation }) => {
+  if (operation !== 'create') return args
+  const forwarded = args.req?.headers?.get?.('x-forwarded-for') ?? ''
+  const ip = (typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : '') || 'unknown'
+  checkRateLimit(ip)
+  return args
+}
 
 // ── Plantilla HTML del email ─────────────────────────────────────────────────
 function buildEmailHtml(doc: any): string {
@@ -13,6 +49,13 @@ function buildEmailHtml(doc: any): string {
     telefono: 'Llamada telefónica',
     correo:   'Correo electrónico',
   }
+
+  const nombres       = escapeHtml(doc.nombres)
+  const apellidos     = escapeHtml(doc.apellidos)
+  const telefono      = escapeHtml(doc.telefono)
+  const correo        = escapeHtml(doc.correo)
+  const formaContacto = escapeHtml(formaLabel[doc.formaContacto] ?? doc.formaContacto)
+  const mensaje       = doc.mensaje ? escapeHtml(doc.mensaje) : null
 
   return `
 <!DOCTYPE html>
@@ -35,40 +78,40 @@ function buildEmailHtml(doc: any): string {
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td style="padding:10px 16px;background:#EEF2FF;border-radius:8px;font-size:13px;color:#5C6478;font-weight:600;width:130px;">Nombre</td>
-              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;font-weight:500;">${doc.nombres} ${doc.apellidos}</td>
+              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;font-weight:500;">${nombres} ${apellidos}</td>
             </tr>
             <tr><td colspan="2" style="height:6px;"></td></tr>
             <tr>
               <td style="padding:10px 16px;background:#EEF2FF;border-radius:8px;font-size:13px;color:#5C6478;font-weight:600;">Teléfono</td>
-              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;">${doc.telefono}</td>
+              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;">${telefono}</td>
             </tr>
             <tr><td colspan="2" style="height:6px;"></td></tr>
             <tr>
               <td style="padding:10px 16px;background:#EEF2FF;border-radius:8px;font-size:13px;color:#5C6478;font-weight:600;">Correo</td>
-              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;">${doc.correo}</td>
+              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;">${correo}</td>
             </tr>
             <tr><td colspan="2" style="height:6px;"></td></tr>
             <tr>
               <td style="padding:10px 16px;background:#EEF2FF;border-radius:8px;font-size:13px;color:#5C6478;font-weight:600;">Prefiere</td>
               <td style="padding:10px 16px;">
                 <span style="background:#E6F9EA;color:#21963A;font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px;">
-                  ${formaLabel[doc.formaContacto] ?? doc.formaContacto}
+                  ${formaContacto}
                 </span>
               </td>
             </tr>
-            ${doc.mensaje ? `
+            ${mensaje ? `
             <tr><td colspan="2" style="height:6px;"></td></tr>
             <tr>
               <td style="padding:10px 16px;background:#EEF2FF;border-radius:8px;font-size:13px;color:#5C6478;font-weight:600;vertical-align:top;">Mensaje</td>
-              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;line-height:1.6;">${doc.mensaje}</td>
+              <td style="padding:10px 16px;font-size:14px;color:#1A1A2E;line-height:1.6;">${mensaje}</td>
             </tr>` : ''}
           </table>
         </td></tr>
 
         <!-- CTA -->
         <tr><td style="background:#f5f5f7;padding:24px 32px;text-align:center;">
-          <a href="mailto:${doc.correo}" style="display:inline-block;background:#0A1145;color:#ffffff;font-size:13px;font-weight:700;padding:12px 28px;border-radius:100px;text-decoration:none;">
-            Responder a ${doc.nombres} →
+          <a href="mailto:${correo}" style="display:inline-block;background:#0A1145;color:#ffffff;font-size:13px;font-weight:700;padding:12px 28px;border-radius:100px;text-decoration:none;">
+            Responder a ${nombres} →
           </a>
         </td></tr>
 
@@ -142,6 +185,7 @@ export const ContactSubmissions: CollectionConfig = {
   },
 
   hooks: {
+    beforeOperation: [rateLimit],
     afterChange: [notifyByEmail],
   },
 

@@ -29,6 +29,11 @@ import { SiteSettings }      from './globals/SiteSettings'
 const filename = fileURLToPath(import.meta.url)
 const dirname  = path.dirname(filename)
 
+// Fail fast — Payload no puede arrancar sin estas variables
+for (const key of ['PAYLOAD_SECRET', 'DATABASE_URL', 'R2_PUBLIC_URL'] as const) {
+  if (!process.env[key]) throw new Error(`[qrealab-cms] Variable de entorno requerida no configurada: ${key}`)
+}
+
 // ── Orígenes CORS permitidos ──────────────────────────────────────────────────
 const allowedOrigins = [
   'http://localhost:4200',
