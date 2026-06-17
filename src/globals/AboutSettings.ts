@@ -190,106 +190,221 @@ export const AboutSettings: GlobalConfig = {
           label: '👥 Equipo',
           description: 'Miembros del equipo organizados por grupos (cada grupo = una pestaña en el sitio)',
           fields: [
+
+            // ── Visibilidad de cada versión ──────────────────────────────────────
             {
               type: 'row',
               fields: [
                 {
-                  name: 'equipoEyebrow',
-                  type: 'text',
-                  label: { es: 'Etiqueta pequeña de sección', en: 'Small section label' },
-                  localized: true,
-                  defaultValue: 'Nuestro Equipo',
-                  admin: { width: '40%', description: 'Ej: "Nuestro Equipo"' },
+                  name: 'equipoMostrar',
+                  type: 'checkbox',
+                  label: { es: 'Mostrar sección de tarjetas del equipo', en: 'Show team card section' },
+                  defaultValue: true,
+                  admin: {
+                    width: '50%',
+                    description: { es: 'Sección con foto y cargo de cada miembro.', en: 'Section with photo and role of each member.' },
+                  },
                 },
                 {
-                  name: 'equipoTitulo',
-                  type: 'text',
-                  label: { es: 'Título de la sección', en: 'Section title' },
-                  localized: true,
-                  defaultValue: 'Las personas que hacen posible Qrealab',
-                  admin: { width: '60%' },
+                  name: 'equipoNarrativaMostrar',
+                  type: 'checkbox',
+                  label: { es: 'Mostrar sección narrativa del equipo', en: 'Show team narrative section' },
+                  defaultValue: false,
+                  admin: {
+                    width: '50%',
+                    description: { es: 'Sección con texto editorial y estadísticas de trayectoria.', en: 'Section with editorial text and track-record stats.' },
+                  },
                 },
               ],
             },
+
+            // ── Sección tarjetas (campos existentes) ─────────────────────────────
             {
-              name: 'equipoGrupos',
-              type: 'array',
-              label: { es: 'Grupos de equipo', en: 'Team groups' },
-              admin: {
-                description: {
-                  es: 'Cada grupo aparece como una pestaña en el sitio. Agrega los miembros dentro de cada grupo.',
-                  en: 'Each group appears as a tab on the site. Add members within each group.',
-                },
-              },
-              defaultValue: [
+              type: 'collapsible',
+              label: '🃏 Sección de Tarjetas — contenido',
+              admin: { initCollapsed: false },
+              fields: [
                 {
-                  nombre: 'Dirección',
-                  miembros: [
-                    { nombre: 'Ana Ramírez',  cargo: 'Directora General',       linkedin: '' },
-                    { nombre: 'Carlos Vega',  cargo: 'Director Comercial',      linkedin: '' },
-                    { nombre: 'Luis Peña',    cargo: 'Director de Operaciones', linkedin: '' },
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'equipoEyebrow',
+                      type: 'text',
+                      label: { es: 'Etiqueta pequeña de sección', en: 'Small section label' },
+                      localized: true,
+                      defaultValue: 'Nuestro Equipo',
+                      admin: { width: '40%', description: 'Ej: "Nuestro Equipo"' },
+                    },
+                    {
+                      name: 'equipoTitulo',
+                      type: 'text',
+                      label: { es: 'Título de la sección', en: 'Section title' },
+                      localized: true,
+                      defaultValue: 'Las personas que hacen posible Qrealab',
+                      admin: { width: '60%' },
+                    },
                   ],
                 },
                 {
-                  nombre: 'Equipo Profesional',
-                  miembros: [
-                    { nombre: 'María Torres', cargo: 'Gerente de Ventas',         linkedin: '' },
-                    { nombre: 'Juan Díaz',    cargo: 'Q.F. Responsable Técnico',  linkedin: '' },
-                    { nombre: 'Sofía Mendez', cargo: 'Ejecutiva de Cuentas',      linkedin: '' },
-                    { nombre: 'Roberto Lara', cargo: 'Analista de Regulación',    linkedin: '' },
+                  name: 'equipoGrupos',
+                  type: 'array',
+                  label: { es: 'Grupos de equipo', en: 'Team groups' },
+                  admin: {
+                    description: {
+                      es: 'Cada grupo aparece como una pestaña en el sitio. Agrega los miembros dentro de cada grupo.',
+                      en: 'Each group appears as a tab on the site. Add members within each group.',
+                    },
+                  },
+                  defaultValue: [
+                    {
+                      nombre: 'Dirección',
+                      miembros: [
+                        { nombre: 'Ana Ramírez',  cargo: 'Directora General',       linkedin: '' },
+                        { nombre: 'Carlos Vega',  cargo: 'Director Comercial',      linkedin: '' },
+                        { nombre: 'Luis Peña',    cargo: 'Director de Operaciones', linkedin: '' },
+                      ],
+                    },
+                    {
+                      nombre: 'Equipo Profesional',
+                      miembros: [
+                        { nombre: 'María Torres', cargo: 'Gerente de Ventas',         linkedin: '' },
+                        { nombre: 'Juan Díaz',    cargo: 'Q.F. Responsable Técnico',  linkedin: '' },
+                        { nombre: 'Sofía Mendez', cargo: 'Ejecutiva de Cuentas',      linkedin: '' },
+                        { nombre: 'Roberto Lara', cargo: 'Analista de Regulación',    linkedin: '' },
+                      ],
+                    },
+                  ],
+                  fields: [
+                    {
+                      name: 'nombre',
+                      type: 'text',
+                      label: { es: 'Nombre del grupo (pestaña)', en: 'Group name (tab)' },
+                      required: true,
+                      localized: true,
+                    },
+                    {
+                      name: 'miembros',
+                      type: 'array',
+                      label: { es: 'Miembros', en: 'Members' },
+                      fields: [
+                        {
+                          type: 'row',
+                          fields: [
+                            {
+                              name: 'nombre',
+                              type: 'text',
+                              label: { es: 'Nombre completo', en: 'Full name' },
+                              required: true,
+                              admin: { width: '50%' },
+                            },
+                            {
+                              name: 'cargo',
+                              type: 'text',
+                              label: { es: 'Cargo / Rol', en: 'Title / Role' },
+                              localized: true,
+                              admin: { width: '50%' },
+                            },
+                          ],
+                        },
+                        {
+                          type: 'row',
+                          fields: [
+                            {
+                              name: 'foto',
+                              type: 'upload',
+                              relationTo: 'media',
+                              label: { es: 'Foto de perfil', en: 'Profile photo' },
+                              admin: { width: '50%' },
+                            },
+                            {
+                              name: 'linkedin',
+                              type: 'text',
+                              label: 'LinkedIn URL',
+                              admin: {
+                                width: '50%',
+                                description: 'https://linkedin.com/in/nombre',
+                              },
+                            },
+                          ],
+                        },
+                      ],
+                    },
                   ],
                 },
               ],
+            },
+
+            // ── Sección narrativa (nueva) ─────────────────────────────────────────
+            {
+              type: 'collapsible',
+              label: '💬 Sección Narrativa — contenido',
+              admin: {
+                initCollapsed: false,
+                description: {
+                  es: 'Versión alternativa: texto editorial + estadísticas de trayectoria.',
+                  en: 'Alternative version: editorial text + track-record stats.',
+                },
+              },
               fields: [
                 {
-                  name: 'nombre',
-                  type: 'text',
-                  label: { es: 'Nombre del grupo (pestaña)', en: 'Group name (tab)' },
-                  required: true,
-                  localized: true,
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'equipoNarrativaEyebrow',
+                      type: 'text',
+                      label: { es: 'Etiqueta de sección', en: 'Section label' },
+                      defaultValue: 'Nuestro Equipo',
+                      admin: { width: '40%', description: 'Ej: "Nuestro Equipo"' },
+                    },
+                    {
+                      name: 'equipoNarrativaTitulo',
+                      type: 'text',
+                      label: { es: 'Título', en: 'Title' },
+                      defaultValue: 'Las personas detrás de Qrealab tienen más de 25 años de experiencia',
+                      admin: { width: '60%' },
+                    },
+                  ],
                 },
                 {
-                  name: 'miembros',
+                  name: 'equipoNarrativaTexto',
+                  type: 'textarea',
+                  label: { es: 'Párrafo descriptivo', en: 'Descriptive paragraph' },
+                  defaultValue: 'Nuestro equipo de líderes ha recorrido todos los eslabones de la industria farmacéutica: distribución, regulación sanitaria, gestión de cadena de suministro y atención especializada a clientes en todo el país. Esa trayectoria es la garantía detrás de cada producto que ponemos en tus manos.',
+                },
+                {
+                  name: 'equipoNarrativaStats',
                   type: 'array',
-                  label: { es: 'Miembros', en: 'Members' },
+                  label: { es: 'Estadísticas / cifras clave', en: 'Stats / key figures' },
+                  maxRows: 4,
+                  admin: {
+                    description: {
+                      es: 'Hasta 4 cifras que se muestran en la cuadrícula de estadísticas. La primera tendrá diseño destacado (fondo oscuro).',
+                      en: 'Up to 4 figures shown in the stats grid. The first one gets a featured design (dark background).',
+                    },
+                  },
+                  defaultValue: [
+                    { valor: '25+', etiqueta: 'Años de experiencia combinada' },
+                    { valor: '2',   etiqueta: 'Líderes especializados' },
+                    { valor: '100%', etiqueta: 'Compromiso con la calidad' },
+                    { valor: '15+', etiqueta: 'Años en el mercado' },
+                  ],
                   fields: [
                     {
                       type: 'row',
                       fields: [
                         {
-                          name: 'nombre',
+                          name: 'valor',
                           type: 'text',
-                          label: { es: 'Nombre completo', en: 'Full name' },
+                          label: { es: 'Número / valor', en: 'Number / value' },
                           required: true,
-                          admin: { width: '50%' },
+                          admin: { width: '30%', description: 'Ej: 25+' },
                         },
                         {
-                          name: 'cargo',
+                          name: 'etiqueta',
                           type: 'text',
-                          label: { es: 'Cargo / Rol', en: 'Title / Role' },
-                          localized: true,
-                          admin: { width: '50%' },
-                        },
-                      ],
-                    },
-                    {
-                      type: 'row',
-                      fields: [
-                        {
-                          name: 'foto',
-                          type: 'upload',
-                          relationTo: 'media',
-                          label: { es: 'Foto de perfil', en: 'Profile photo' },
-                          admin: { width: '50%' },
-                        },
-                        {
-                          name: 'linkedin',
-                          type: 'text',
-                          label: 'LinkedIn URL',
-                          admin: {
-                            width: '50%',
-                            description: 'https://linkedin.com/in/nombre',
-                          },
+                          label: { es: 'Descripción', en: 'Description' },
+                          required: true,
+                          admin: { width: '70%', description: 'Ej: Años de experiencia combinada' },
                         },
                       ],
                     },
@@ -297,6 +412,7 @@ export const AboutSettings: GlobalConfig = {
                 },
               ],
             },
+
           ],
         },
 
