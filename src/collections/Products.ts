@@ -64,6 +64,21 @@ export const Products: CollectionConfig = {
       label: 'Imagen principal',
     },
     {
+      name: 'prescripcion',
+      type: 'select',
+      label: { es: 'Tipo de venta', en: 'Sale type' },
+      options: [
+        { label: 'Venta con receta médica', value: 'con-receta' },
+        { label: 'Venta sin receta médica', value: 'sin-receta' },
+      ],
+      admin: {
+        description: {
+          es: 'Opcional. Si se deja en blanco no aparece ninguna etiqueta en el detalle del producto.',
+          en: 'Optional. Leave blank to show no label on the product detail page.',
+        },
+      },
+    },
+    {
       name: 'inserto',
       type: 'upload',
       relationTo: 'documents',
